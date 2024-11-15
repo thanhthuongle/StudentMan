@@ -1,13 +1,19 @@
 package vn.edu.hust.studentman
 
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +48,27 @@ class MainActivity : AppCompatActivity() {
     findViewById<RecyclerView>(R.id.recycler_view_students).run {
       adapter = studentAdapter
       layoutManager = LinearLayoutManager(this@MainActivity)
+    }
+
+    findViewById<Button>(R.id.btn_add_new).setOnClickListener {
+      val dialogView = LayoutInflater.from(this)
+        .inflate(R.layout.student_dialog, null)
+
+      val editHoten = dialogView.findViewById<EditText>(R.id.edit_hoten)
+      val editMssv = dialogView.findViewById<EditText>(R.id.edit_mssv)
+
+      val dialog = AlertDialog.Builder(this)
+        .setIcon(R.drawable.baseline_add_24)
+        .setTitle("Add new student")
+        .setView(dialogView)
+        .setPositiveButton("OK") { _, _ ->
+          val hoten = editHoten.text.toString()
+          val mssv = editMssv.text.toString()
+          students.add(0, StudentModel(hoten, mssv))
+          studentAdapter.notifyDataSetChanged()
+        }
+        .setNegativeButton("Cancel", null)
+        .show()
     }
   }
 }
